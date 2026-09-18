@@ -1,0 +1,712 @@
+<title>수강 경험 입력</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#F2F5F9; --surface:#FFFFFF; --sunk:#E9EEF6;
+  --ink:#16202E; --ink-2:#4A576B; --ink-3:#7C8798;
+  --line:#DCE3ED; --line-2:#C3CDDC;
+  --accent:#2B5FD9; --accent-soft:#E6ECFB; --accent-ink:#1E47A8;
+  --warn:#C8551F; --warn-soft:#FBEDE5;
+  --ok:#1B7A5A; --ok-soft:#E3F3EC;
+  --shadow:0 1px 2px rgba(22,32,46,.05), 0 8px 24px -12px rgba(22,32,46,.18);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#10141B; --surface:#181E27; --sunk:#131920;
+  --ink:#E7ECF4; --ink-2:#A3AFC0; --ink-3:#77839460;
+  --ink-3:#7B8798;
+  --line:#2A3340; --line-2:#3A4655;
+  --accent:#6E9BFF; --accent-soft:#1C2740; --accent-ink:#A8C3FF;
+  --warn:#F0895A; --warn-soft:#2E1F18;
+  --ok:#5CCFA4; --ok-soft:#15281F;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.6);
+}}
+:root[data-theme="dark"]{
+  --ground:#10141B; --surface:#181E27; --sunk:#131920;
+  --ink:#E7ECF4; --ink-2:#A3AFC0; --ink-3:#7B8798;
+  --line:#2A3340; --line-2:#3A4655;
+  --accent:#6E9BFF; --accent-soft:#1C2740; --accent-ink:#A8C3FF;
+  --warn:#F0895A; --warn-soft:#2E1F18;
+  --ok:#5CCFA4; --ok-soft:#15281F;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"IBM Plex Sans KR","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 40px}
+
+/* header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;
+  background:var(--ground);padding-block:16px 10px;margin-inline:-16px;padding-inline:16px;
+  border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.brand h1{margin:0;font-size:17px;font-weight:700;letter-spacing:-.3px}
+.brand span{font-size:12.5px;color:var(--ink-3)}
+.bar{height:3px;background:var(--sunk);border-radius:2px;margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:2px;transition:width .35s ease}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+
+/* intro */
+.intro{padding-block:18px 4px}
+.intro p{margin:0;color:var(--ink-2);font-size:14px}
+.intro b{color:var(--ink);font-weight:600}
+
+/* section */
+section{padding-block:22px;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.sh{display:flex;align-items:baseline;gap:8px;margin-bottom:3px}
+.sh .n{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.06em;
+  font-variant-numeric:tabular-nums}
+.sh h2{margin:0;font-size:15.5px;font-weight:700;letter-spacing:-.2px}
+.hint{margin:0 0 12px;font-size:12.5px;color:var(--ink-3);line-height:1.55}
+.field{margin-top:14px}
+label.lb{display:block;font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+
+/* choice buttons */
+.choices{display:flex;flex-wrap:wrap;gap:7px}
+.choices.grow>button{flex:1 1 auto;min-width:0}
+.ch{appearance:none;font:inherit;font-size:13.5px;font-weight:500;cursor:pointer;
+  background:var(--surface);color:var(--ink-2);border:1px solid var(--line-2);
+  border-radius:9px;padding:9px 13px;transition:background .12s,border-color .12s,color .12s}
+.ch:hover{border-color:var(--accent)}
+.ch[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);
+  color:var(--accent-ink);font-weight:600}
+.ch:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.ch{transition:none}}
+
+/* text + select */
+input[type=text],select{width:100%;font:inherit;font-size:15px;color:var(--ink);
+  background:var(--surface);border:1px solid var(--line-2);border-radius:9px;
+  padding:10px 12px;appearance:none}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--ink-3) 50%),
+  linear-gradient(135deg,var(--ink-3) 50%,transparent 50%);
+  background-position:calc(100% - 17px) 20px,calc(100% - 12px) 20px;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:34px}
+input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+input::placeholder{color:var(--ink-3)}
+
+/* nested reveal */
+.sub{margin-top:14px;padding-left:13px;border-left:2px solid var(--accent-soft)}
+
+/* week rows */
+.weeks{display:grid;gap:8px;margin-top:10px}
+.wrow{display:grid;grid-template-columns:52px 1fr;align-items:center;gap:9px}
+.wrow .idx{font-size:12.5px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums}
+
+/* exam grid */
+.exam{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:400px){.exam{grid-template-columns:1fr}}
+
+/* note */
+.note{margin-top:11px;background:var(--sunk);border-radius:9px;padding:11px 13px;
+  font-size:12.5px;line-height:1.6;color:var(--ink-2)}
+.note b{color:var(--ink);font-weight:600}
+.note.warn{background:var(--warn-soft)}
+
+/* submit */
+.actions{padding-block:24px 8px;display:grid;gap:10px}
+.submit{appearance:none;font:inherit;font-size:16px;font-weight:700;cursor:pointer;
+  background:var(--accent);color:#fff;border:0;border-radius:11px;padding:15px;
+  box-shadow:var(--shadow)}
+.submit:disabled{background:var(--line-2);color:var(--ink-3);cursor:not-allowed;box-shadow:none}
+.submit:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.msg{font-size:13px;color:var(--warn);min-height:1.2em;text-align:center}
+.msg.ok{color:var(--ok)}
+
+/* view tabs */
+.vtabs{display:flex;gap:5px;margin-top:11px}
+.vtab{appearance:none;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;
+  background:transparent;color:var(--ink-3);border:0;padding:5px 11px;border-radius:7px}
+.vtab[aria-selected="true"]{background:var(--accent-soft);color:var(--accent-ink)}
+.vtab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* saved confirmation */
+.saved{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:20px 18px;box-shadow:var(--shadow);margin-top:20px}
+.saved .flag{display:inline-block;background:var(--ok-soft);color:var(--ok);
+  font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:6px;margin-bottom:9px}
+.saved h2{margin:0 0 3px;font-size:18px;font-weight:700;letter-spacing:-.3px}
+.saved .who{font-size:13px;color:var(--ink-3);margin:0 0 16px}
+dl.rec{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:0;font-size:13.5px;
+  padding-top:15px;border-top:1px solid var(--line)}
+dl.rec dt{color:var(--ink-3);white-space:nowrap}
+dl.rec dd{margin:0;font-weight:500}
+.docid{margin-top:15px;font-size:11.5px;color:var(--ink-3);word-break:break-all}
+.again{appearance:none;font:inherit;font-size:14px;font-weight:600;cursor:pointer;width:100%;
+  background:var(--surface);color:var(--accent-ink);border:1px solid var(--accent);
+  border-radius:10px;padding:12px;margin-top:18px}
+.again:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* raw data */
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:18px 0 11px}
+.toolbar .count{font-size:14px;font-weight:700;margin-right:auto;font-variant-numeric:tabular-nums}
+.btn{appearance:none;font:inherit;font-size:13px;font-weight:600;cursor:pointer;
+  background:var(--surface);color:var(--ink);border:1px solid var(--line-2);
+  border-radius:9px;padding:8px 13px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:11px;background:var(--surface)}
+table.raw{border-collapse:collapse;font-size:12px;white-space:nowrap;min-width:100%}
+table.raw th{background:var(--sunk);text-align:left;font-weight:600;padding:8px 10px;
+  border-bottom:1px solid var(--line)}
+table.raw td{padding:7px 10px;border-bottom:1px solid var(--line);color:var(--ink-2);
+  font-variant-numeric:tabular-nums}
+table.raw tr:last-child td{border-bottom:0}
+table.raw td.empty{color:var(--warn);font-weight:600}
+.emptystate{padding:34px 18px;text-align:center;color:var(--ink-3);font-size:13.5px}
+footer{padding-block:20px 0;font-size:11.5px;color:var(--ink-3);line-height:1.6;text-align:center}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand"><h1>수강 경험 입력</h1><span>학업나침반 · 약 3분</span></div>
+    <div class="vtabs" role="tablist">
+      <button type="button" class="vtab" id="tabForm" role="tab" aria-selected="true">입력</button>
+      <button type="button" class="vtab" id="tabData" role="tab" aria-selected="false">저장된 원본</button>
+    </div>
+    <div class="bar"><i id="prog"></i></div>
+  </header>
+
+  <div id="formView">
+    <div class="intro">
+      <p>들었던 과목이 <b>언제 바쁘게 만들었는지</b>를 남겨 주세요. 후배들이 수강신청 전에
+      학기 부담을 미리 계산하는 데 쓰입니다. 교수님이나 강의에 대한 평가는 받지 않습니다.</p>
+    </div>
+
+    <!-- 1 과목 -->
+    <section>
+      <div class="sh"><span class="n">01</span><h2>과목 정보</h2></div>
+      <p class="hint">본인이 실제로 수강한 과목 기준으로 적어 주세요.</p>
+
+      <div class="field">
+        <label class="lb" for="dept">개설 학부</label>
+        <div class="choices grow" id="dept" role="group" aria-label="개설 학부">
+          <button type="button" class="ch" data-v="로봇학부" aria-pressed="false">로봇학부</button>
+          <button type="button" class="ch" data-v="정보융합학부" aria-pressed="false">정보융합학부</button>
+          <button type="button" class="ch" data-v="소프트웨어학부" aria-pressed="false">소프트웨어학부</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lb" for="term">개설 학기</label>
+        <div class="choices grow" id="term" role="group" aria-label="개설 학기">
+          <button type="button" class="ch" data-v="1" aria-pressed="false">1학기</button>
+          <button type="button" class="ch" data-v="2" aria-pressed="false">2학기</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lb" for="course">과목명</label>
+        <input type="text" id="course" placeholder="예) 디지털시스템설계" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label class="lb" for="prof">담당 교수</label>
+        <input type="text" id="prof" placeholder="예) 홍길동" autocomplete="off">
+      </div>
+    </section>
+
+    <!-- 2 프로젝트 -->
+    <section>
+      <div class="sh"><span class="n">02</span><h2>프로젝트</h2></div>
+      <p class="hint">학기 중 진행한 프로젝트가 있었나요?</p>
+      <div class="choices grow" id="projHas" role="group" aria-label="프로젝트 유무">
+        <button type="button" class="ch" data-v="yes" aria-pressed="false">있었음</button>
+        <button type="button" class="ch" data-v="no" aria-pressed="false">없었음</button>
+      </div>
+
+      <div class="sub" id="projSub" hidden>
+        <div class="field">
+          <label class="lb">형태</label>
+          <div class="choices grow" id="projType" role="group" aria-label="프로젝트 형태">
+            <button type="button" class="ch" data-v="team" aria-pressed="false">팀 프로젝트</button>
+            <button type="button" class="ch" data-v="individual" aria-pressed="false">개인 프로젝트</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="lb" for="projWeek">발표 · 제출이 있었던 시기</label>
+          <select id="projWeek"></select>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 퀴즈 -->
+    <section>
+      <div class="sh"><span class="n">03</span><h2>퀴즈</h2></div>
+      <p class="hint">수업 중 본 쪽지시험·퀴즈를 말합니다. 중간·기말고사는 05번에서 따로 받습니다.</p>
+      <div class="choices grow" id="quizHas" role="group" aria-label="퀴즈 유무">
+        <button type="button" class="ch" data-v="yes" aria-pressed="false">있었음</button>
+        <button type="button" class="ch" data-v="no" aria-pressed="false">없었음</button>
+      </div>
+
+      <div class="sub" id="quizSub" hidden>
+        <div class="field">
+          <label class="lb">횟수</label>
+          <div class="choices grow" id="quizCount" role="group" aria-label="퀴즈 횟수">
+            <button type="button" class="ch" data-v="1" aria-pressed="false">1회</button>
+            <button type="button" class="ch" data-v="2" aria-pressed="false">2회</button>
+            <button type="button" class="ch" data-v="3" aria-pressed="false">3회</button>
+            <button type="button" class="ch" data-v="4" aria-pressed="false">4회 이상</button>
+          </div>
+        </div>
+        <div class="weeks" id="quizWeeks"></div>
+        <div class="note" id="quizNote" hidden>
+          정확한 주차가 기억나지 않으면 <b>중간고사 무렵</b>이나 <b>기말고사 무렵</b>을 골라 주세요.
+          비워 두는 것보다 대략적인 시기라도 남기는 편이 훨씬 쓸모 있습니다.
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 과제 -->
+    <section>
+      <div class="sh"><span class="n">04</span><h2>과제</h2></div>
+      <p class="hint">제출 과제·보고서·실습 리포트를 말합니다.</p>
+      <div class="choices grow" id="asgHas" role="group" aria-label="과제 유무">
+        <button type="button" class="ch" data-v="yes" aria-pressed="false">있었음</button>
+        <button type="button" class="ch" data-v="no" aria-pressed="false">없었음</button>
+      </div>
+
+      <div class="sub" id="asgSub" hidden>
+        <div class="field">
+          <label class="lb">제출 주기</label>
+          <div class="choices" id="asgPattern" role="group" aria-label="과제 주기">
+            <button type="button" class="ch" data-v="weekly" aria-pressed="false">매주</button>
+            <button type="button" class="ch" data-v="biweekly" aria-pressed="false">격주</button>
+            <button type="button" class="ch" data-v="exam_only" aria-pressed="false">중간 · 기말 각 1회</button>
+            <button type="button" class="ch" data-v="custom" aria-pressed="false">직접 고르기</button>
+          </div>
+        </div>
+
+        <div id="asgCustom" hidden>
+          <div class="field">
+            <label class="lb" for="asgCount">총 몇 회였나요?</label>
+            <select id="asgCount"></select>
+          </div>
+          <div class="weeks" id="asgWeeks"></div>
+          <div class="note">
+            정확한 주차가 기억나지 않으면 <b>중간고사 무렵</b>이나 <b>기말고사 무렵</b>을 골라 주세요.
+            비워 두는 것보다 대략적인 시기라도 남기는 편이 훨씬 쓸모 있습니다.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 시험 -->
+    <section>
+      <div class="sh"><span class="n">05</span><h2>중간 · 기말고사</h2></div>
+      <p class="hint">각각 몇 번 치렀는지만 고르면 됩니다.</p>
+      <div class="exam">
+        <div>
+          <label class="lb">중간고사</label>
+          <div class="choices grow" id="examMid" role="group" aria-label="중간고사 횟수">
+            <button type="button" class="ch" data-v="0" aria-pressed="false">없음</button>
+            <button type="button" class="ch" data-v="1" aria-pressed="false">1회</button>
+            <button type="button" class="ch" data-v="2" aria-pressed="false">2회</button>
+          </div>
+        </div>
+        <div>
+          <label class="lb">기말고사</label>
+          <div class="choices grow" id="examFinal" role="group" aria-label="기말고사 횟수">
+            <button type="button" class="ch" data-v="0" aria-pressed="false">없음</button>
+            <button type="button" class="ch" data-v="1" aria-pressed="false">1회</button>
+            <button type="button" class="ch" data-v="2" aria-pressed="false">2회</button>
+          </div>
+        </div>
+      </div>
+      <div class="note warn">
+        <b>2회를 고르는 경우</b> — 같은 중간고사를 <b>코딩테스트와 필기시험으로 나누어 다른 날 두 번</b>
+        치르는 과목이 있습니다. 시험 주간에 준비할 것이 두 배가 되므로, 이때는 1회가 아니라 2회로 골라 주세요.<br><br>
+        시험 유형(온라인·오프라인, 서술형·객관식)은 사람마다 체감이 크게 갈리고 에브리타임에서도 확인할 수 있어
+        수집하지 않습니다. 저희가 재는 것은 <b>난도가 아니라 언제 얼마나 몰리는가</b>입니다.
+      </div>
+    </section>
+
+    <div class="actions">
+      <button type="button" class="submit" id="submit" disabled>제출하기</button>
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <footer>
+      익명으로 저장되며 로그인·개인정보를 받지 않습니다.<br>
+      교수 개인에 대한 평가·순위는 수집하지도, 제공하지도 않습니다.
+    </footer>
+  </div>
+
+  <!-- 제출 후 -->
+  <div id="doneView" hidden>
+    <div class="saved">
+      <span class="flag">저장 완료</span>
+      <h2 id="doneTitle"></h2>
+      <p class="who" id="doneWho"></p>
+      <dl class="rec" id="doneRec"></dl>
+      <p class="docid" id="doneId"></p>
+      <button type="button" class="again" id="again">다른 과목도 입력하기</button>
+    </div>
+    <footer>저장된 그대로 표시한 것입니다. 빠진 항목이 있으면 다시 입력해 주세요.</footer>
+  </div>
+
+  <!-- 저장된 원본 -->
+  <div id="dataView" hidden>
+    <div class="toolbar">
+      <span class="count" id="rowCount">불러오는 중…</span>
+      <button type="button" class="btn" id="reload">새로고침</button>
+      <button type="button" class="btn primary" id="csv">CSV로 저장</button>
+    </div>
+    <div class="tablewrap"><div id="tableHost"></div></div>
+    <div class="msg" id="dataMsg" style="margin-top:10px"></div>
+    <footer>
+      DB에 저장된 전체 레코드를 가공 없이 보여 줍니다. 빈 칸은 <b>누락</b>이므로
+      해당 문항이 제대로 저장되는지 확인하는 데 쓰세요.
+    </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var MID_WEEK = 8, FINAL_WEEK = 15, TOTAL_WEEKS = 15;
+
+  // ---- 주차 선택지 (스크롤 피커) ----
+  function weekOptions(sel, placeholder){
+    var h = '<option value="">' + placeholder + '</option>';
+    for (var w = 1; w <= TOTAL_WEEKS; w++) h += '<option value="' + w + '">' + w + '주차</option>';
+    h += '<optgroup label="정확히 기억나지 않을 때">'
+       + '<option value="mid">중간고사 무렵</option>'
+       + '<option value="final">기말고사 무렵</option>'
+       + '<option value="unknown">기억나지 않음</option></optgroup>';
+    sel.innerHTML = h;
+  }
+
+  var S = { dept:"", term:"", course:"", prof:"",
+            projHas:"", projType:"", projWeek:"",
+            quizHas:"", quizCount:"", quizWeeks:[],
+            asgHas:"", asgPattern:"", asgCount:"", asgWeeks:[],
+            examMid:"", examFinal:"" };
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  // ---- 버튼 그룹 ----
+  function group(id, key, after){
+    var box = $(id);
+    box.addEventListener("click", function(e){
+      var b = e.target.closest("button.ch"); if (!b) return;
+      Array.prototype.forEach.call(box.querySelectorAll("button.ch"), function(x){
+        x.setAttribute("aria-pressed", String(x === b));
+      });
+      S[key] = b.dataset.v;
+      if (after) after(b.dataset.v);
+      refresh();
+    });
+  }
+
+  group("dept", "dept"); group("term", "term");
+  group("examMid", "examMid"); group("examFinal", "examFinal");
+
+  group("projHas", "projHas", function(v){
+    $("projSub").hidden = (v !== "yes");
+    if (v !== "yes"){ S.projType = ""; S.projWeek = ""; }
+  });
+  group("projType", "projType");
+  weekOptions($("projWeek"), "시기를 고르세요");
+  $("projWeek").addEventListener("change", function(){ S.projWeek = this.value; refresh(); });
+
+  group("quizHas", "quizHas", function(v){
+    $("quizSub").hidden = (v !== "yes");
+    if (v !== "yes"){ S.quizCount = ""; S.quizWeeks = []; $("quizWeeks").innerHTML = ""; $("quizNote").hidden = true; }
+  });
+  group("quizCount", "quizCount", function(v){ buildWeeks("quizWeeks", Number(v), "quizWeeks", "퀴즈"); $("quizNote").hidden = false; });
+
+  group("asgHas", "asgHas", function(v){
+    $("asgSub").hidden = (v !== "yes");
+    if (v !== "yes"){ S.asgPattern = ""; S.asgCount = ""; S.asgWeeks = []; $("asgCustom").hidden = true; }
+  });
+  group("asgPattern", "asgPattern", function(v){
+    var custom = (v === "custom");
+    $("asgCustom").hidden = !custom;
+    if (!custom){ S.asgCount = ""; S.asgWeeks = []; $("asgWeeks").innerHTML = ""; }
+  });
+
+  // 과제 횟수 셀렉트 1~15
+  (function(){
+    var s = $("asgCount"), h = '<option value="">횟수를 고르세요</option>';
+    for (var i = 1; i <= 15; i++) h += '<option value="' + i + '">' + i + '회</option>';
+    s.innerHTML = h;
+    s.addEventListener("change", function(){
+      S.asgCount = this.value;
+      buildWeeks("asgWeeks", Number(this.value), "asgWeeks", "과제");
+      refresh();
+    });
+  })();
+
+  // 회차별 주차 선택 행 — 순서대로 매칭되어 저장된다
+  function buildWeeks(boxId, n, key, word){
+    var box = $(boxId); box.innerHTML = ""; S[key] = [];
+    if (!n) { refresh(); return; }
+    for (var i = 0; i < n; i++){
+      var row = document.createElement("div"); row.className = "wrow";
+      var idx = document.createElement("span"); idx.className = "idx";
+      idx.textContent = (i + 1) + "회차";
+      var sel = document.createElement("select");
+      sel.id = boxId + "-" + i;
+      weekOptions(sel, word + " 시기");
+      (function(pos){
+        sel.addEventListener("change", function(){ S[key][pos] = this.value; refresh(); });
+      })(i);
+      row.appendChild(idx); row.appendChild(sel); box.appendChild(row);
+      S[key][i] = "";
+    }
+    refresh();
+  }
+
+  $("course").addEventListener("input", function(){ S.course = this.value.trim(); refresh(); });
+  $("prof").addEventListener("input", function(){ S.prof = this.value.trim(); refresh(); });
+
+  // ---- 완성도 ----
+  function done(){
+    var need = [ !!S.dept, !!S.term, !!S.course, !!S.prof,
+                 !!S.projHas, !!S.quizHas, !!S.asgHas,
+                 S.examMid !== "", S.examFinal !== "" ];
+    if (S.projHas === "yes") need.push(!!S.projType, !!S.projWeek);
+    if (S.quizHas === "yes") need.push(!!S.quizCount, S.quizWeeks.length > 0 && S.quizWeeks.every(Boolean));
+    if (S.asgHas === "yes"){
+      need.push(!!S.asgPattern);
+      if (S.asgPattern === "custom") need.push(!!S.asgCount, S.asgWeeks.length > 0 && S.asgWeeks.every(Boolean));
+    }
+    var ok = need.filter(Boolean).length;
+    return { ok: ok, total: need.length, ready: ok === need.length };
+  }
+  function refresh(){
+    var d = done();
+    $("prog").style.width = Math.round(d.ok / d.total * 100) + "%";
+    $("submit").disabled = !d.ready || busy;
+    $("submit").textContent = d.ready ? "제출하기" : "제출하기 (" + d.ok + "/" + d.total + ")";
+  }
+
+  // ---- 주차 정규화 ----
+  function toWeek(v){
+    if (v === "mid") return MID_WEEK;
+    if (v === "final") return FINAL_WEEK;
+    if (v === "unknown" || !v) return null;
+    var n = Number(v); return isNaN(n) ? null : n;
+  }
+  function assignmentWeeks(){
+    if (S.asgHas !== "yes") return [];
+    if (S.asgPattern === "weekly"){ var a = []; for (var w = 2; w <= TOTAL_WEEKS; w++) a.push(w); return a; }
+    if (S.asgPattern === "biweekly"){ var b = []; for (var x = 3; x <= TOTAL_WEEKS; x += 2) b.push(x); return b; }
+    if (S.asgPattern === "exam_only") return [MID_WEEK, FINAL_WEEK];
+    return S.asgWeeks.map(toWeek).filter(function(v){ return v !== null; });
+  }
+  function buildPayload(){
+    var events = [];
+    var push = function(w, kind){ if (w) events.push({ week: w, kind: kind }); };
+    if (S.projHas === "yes") push(toWeek(S.projWeek), "project_due");
+    if (S.quizHas === "yes") S.quizWeeks.map(toWeek).forEach(function(w){ push(w, "quiz"); });
+    assignmentWeeks().forEach(function(w){ push(w, "assignment"); });
+    for (var i = 0; i < Number(S.examMid || 0); i++) push(MID_WEEK, "exam");
+    for (var j = 0; j < Number(S.examFinal || 0); j++) push(FINAL_WEEK, "exam");
+
+    return {
+      createdAt: new Date().toISOString(),
+      courseKey: [S.dept, S.term, S.course, S.prof].join("|"),
+      dept: S.dept, term: Number(S.term), course: S.course, professor: S.prof,
+      project: { has: S.projHas === "yes", type: S.projType || null, weekRaw: S.projWeek || null },
+      quiz: { has: S.quizHas === "yes", count: Number(S.quizCount || 0), weeksRaw: S.quizWeeks.slice() },
+      assignment: { has: S.asgHas === "yes", pattern: S.asgPattern || null,
+                    count: Number(S.asgCount || 0), weeksRaw: S.asgWeeks.slice(),
+                    weeks: assignmentWeeks() },
+      exam: { mid: Number(S.examMid || 0), final: Number(S.examFinal || 0) },
+      loadEvents: events
+    };
+  }
+
+  // ---- 저장 ----
+  var db = null, busy = false;
+  claude.use("db").then(function(x){
+    db = x;
+    if (!db){ $("msg").textContent = "이 화면에서는 저장을 쓸 수 없습니다. 입력은 그대로 확인할 수 있습니다."; }
+  });
+
+  $("submit").addEventListener("click", function(){
+    if (busy) return;
+    var payload = buildPayload();
+    if (!db){ $("msg").textContent = "저장 기능을 쓸 수 없어 제출하지 못했습니다."; return; }
+    busy = true; refresh();
+    $("submit").textContent = "저장하는 중…";
+    $("msg").className = "msg"; $("msg").textContent = "";
+
+    db.collection("reports").add(payload).then(function(ref){
+      showSaved(payload, ref && ref.id);
+    })["catch"](function(e){
+      busy = false; refresh();
+      var code = (e && e.code) || "";
+      $("msg").className = "msg";
+      $("msg").textContent = code === "resource_exhausted"
+        ? "잠시 후 다시 눌러 주세요. 요청이 몰렸습니다."
+        : code === "quota_exceeded"
+        ? "저장 공간이 가득 찼습니다. 팀에 알려 주세요."
+        : "저장하지 못했습니다. 다시 눌러 주세요.";
+    });
+  });
+
+  // ---- 저장 확인 (통계 아님 — 내가 낸 값이 그대로 들어갔는지 보는 화면) ----
+  var WEEK_LABEL = { mid:"중간고사 무렵", "final":"기말고사 무렵", unknown:"기억나지 않음" };
+  function weekText(v){ return !v ? "—" : (WEEK_LABEL[v] || (v + "주차")); }
+  function weekListText(arr){
+    if (!arr || !arr.length) return "—";
+    return arr.map(function(v, i){ return (i + 1) + "회차 " + weekText(v); }).join(" · ");
+  }
+  var PATTERN_LABEL = { weekly:"매주", biweekly:"격주", exam_only:"중간 · 기말 각 1회", custom:"직접 고름" };
+
+  function showSaved(p, id){
+    $("doneTitle").textContent = p.course;
+    $("doneWho").textContent = p.professor + " 교수 · " + p.dept + " · " + p.term + "학기";
+
+    var rows = [
+      ["프로젝트", p.project.has
+        ? (p.project.type === "team" ? "팀" : "개인") + " · " + weekText(p.project.weekRaw)
+        : "없음"],
+      ["퀴즈", p.quiz.has ? p.quiz.count + "회 · " + weekListText(p.quiz.weeksRaw) : "없음"],
+      ["과제", p.assignment.has
+        ? (PATTERN_LABEL[p.assignment.pattern] || "—")
+          + (p.assignment.pattern === "custom"
+              ? " · " + p.assignment.count + "회 · " + weekListText(p.assignment.weeksRaw)
+              : " · " + p.assignment.weeks.length + "회 (" + p.assignment.weeks.join(", ") + "주차)")
+        : "없음"],
+      ["중간 · 기말", p.exam.mid + "회 · " + p.exam["final"] + "회"],
+      ["저장된 부담 이벤트", p.loadEvents.length + "건 — "
+        + p.loadEvents.map(function(e){ return e.week + "주차 " + e.kind; }).join(", ")]
+    ];
+    $("doneRec").innerHTML = rows.map(function(r){
+      return "<dt>" + r[0] + "</dt><dd>" + esc(r[1]) + "</dd>";
+    }).join("");
+    $("doneId").textContent = "문서 ID · " + (id || "(확인 불가)");
+
+    $("formView").hidden = true;
+    $("dataView").hidden = true;
+    $("doneView").hidden = false;
+    $("prog").style.width = "100%";
+    window.scrollTo(0, 0);
+  }
+  $("again").addEventListener("click", function(){ location.reload(); });
+
+  // ---- 저장된 원본 ----
+  var COLS = [
+    ["id", function(d, id){ return id; }],
+    ["createdAt", function(d){ return d.createdAt; }],
+    ["dept", function(d){ return d.dept; }],
+    ["term", function(d){ return d.term; }],
+    ["course", function(d){ return d.course; }],
+    ["professor", function(d){ return d.professor; }],
+    ["project_has", function(d){ return b(d.project && d.project.has); }],
+    ["project_type", function(d){ return d.project && d.project.type; }],
+    ["project_week", function(d){ return d.project && d.project.weekRaw; }],
+    ["quiz_has", function(d){ return b(d.quiz && d.quiz.has); }],
+    ["quiz_count", function(d){ return d.quiz && d.quiz.count; }],
+    ["quiz_weeks", function(d){ return d.quiz && (d.quiz.weeksRaw || []).join(";"); }],
+    ["asg_has", function(d){ return b(d.assignment && d.assignment.has); }],
+    ["asg_pattern", function(d){ return d.assignment && d.assignment.pattern; }],
+    ["asg_count", function(d){ return d.assignment && d.assignment.count; }],
+    ["asg_weeks_raw", function(d){ return d.assignment && (d.assignment.weeksRaw || []).join(";"); }],
+    ["asg_weeks", function(d){ return d.assignment && (d.assignment.weeks || []).join(";"); }],
+    ["exam_mid", function(d){ return d.exam && d.exam.mid; }],
+    ["exam_final", function(d){ return d.exam && d.exam["final"]; }],
+    ["load_events", function(d){
+        return (d.loadEvents || []).map(function(e){ return e.week + ":" + e.kind; }).join(";"); }],
+    ["courseKey", function(d){ return d.courseKey; }]
+  ];
+  function b(v){ return v === true ? "TRUE" : v === false ? "FALSE" : ""; }
+  function esc(s){
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function cell(v){ return (v === null || v === undefined || v === "") ? "" : String(v); }
+
+  var loadedRows = [];
+  function loadData(){
+    $("dataMsg").textContent = "";
+    $("rowCount").textContent = "불러오는 중…";
+    if (!db){ $("rowCount").textContent = "저장소를 쓸 수 없습니다"; return; }
+    db.collection("reports").limit(1000).get().then(function(snap){
+      loadedRows = snap.docs.map(function(doc){ return { id: doc.id, d: doc.data() || {} }; });
+      loadedRows.sort(function(a, z){
+        return String(z.d.createdAt || "").localeCompare(String(a.d.createdAt || ""));
+      });
+      renderTable();
+    })["catch"](function(){
+      $("rowCount").textContent = "불러오지 못했습니다";
+      $("dataMsg").textContent = "새로고침을 눌러 다시 시도해 주세요.";
+    });
+  }
+  function renderTable(){
+    $("rowCount").textContent = "총 " + loadedRows.length + "건";
+    if (!loadedRows.length){
+      $("tableHost").innerHTML = '<div class="emptystate">아직 저장된 응답이 없습니다.</div>';
+      return;
+    }
+    var h = "<table class='raw'><thead><tr>";
+    COLS.forEach(function(c){ h += "<th>" + c[0] + "</th>"; });
+    h += "</tr></thead><tbody>";
+    loadedRows.forEach(function(row){
+      h += "<tr>";
+      COLS.forEach(function(c){
+        var v = cell(c[1](row.d, row.id));
+        h += "<td" + (v === "" ? " class='empty'" : "") + ">" + (v === "" ? "비어 있음" : esc(v)) + "</td>";
+      });
+      h += "</tr>";
+    });
+    $("tableHost").innerHTML = h + "</tbody></table>";
+  }
+
+  function csvText(){
+    var q = function(v){
+      var s = cell(v);
+      return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    };
+    var lines = [COLS.map(function(c){ return c[0]; }).join(",")];
+    loadedRows.forEach(function(row){
+      lines.push(COLS.map(function(c){ return q(c[1](row.d, row.id)); }).join(","));
+    });
+    return "﻿" + lines.join("\r\n");   // BOM — 엑셀에서 한글이 깨지지 않도록
+  }
+
+  var dl = null;
+  claude.use("downloads").then(function(x){
+    dl = x;
+    if (!dl) $("csv").disabled = true;
+  });
+  $("csv").addEventListener("click", function(){
+    if (!loadedRows.length){ $("dataMsg").textContent = "저장된 응답이 없습니다."; return; }
+    if (!dl){ $("dataMsg").textContent = "이 화면에서는 파일 저장을 쓸 수 없습니다."; return; }
+    var name = "학업나침반_수강경험_" + new Date().toISOString().slice(0, 10) + ".csv";
+    dl.save({ filename: name, data: csvText() }).then(function(){
+      $("dataMsg").className = "msg ok";
+      $("dataMsg").textContent = "저장했습니다.";
+    })["catch"](function(e){
+      var code = (e && e.code) || "";
+      $("dataMsg").className = "msg";
+      $("dataMsg").textContent = code === "declined" ? "" : "저장하지 못했습니다.";
+    });
+  });
+  $("reload").addEventListener("click", loadData);
+
+  // ---- 탭 ----
+  function showTab(which){
+    var isData = (which === "data");
+    $("tabForm").setAttribute("aria-selected", String(!isData));
+    $("tabData").setAttribute("aria-selected", String(isData));
+    $("dataView").hidden = !isData;
+    if (isData){
+      $("formView").hidden = true; $("doneView").hidden = true;
+      loadData();
+    } else {
+      $("formView").hidden = false; $("doneView").hidden = true;
+    }
+    window.scrollTo(0, 0);
+  }
+  $("tabForm").addEventListener("click", function(){ showTab("form"); });
+  $("tabData").addEventListener("click", function(){ showTab("data"); });
+
+  refresh();
+})();
+</script>

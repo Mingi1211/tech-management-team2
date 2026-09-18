@@ -1,0 +1,282 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#fff;font-family:"Noto Sans CJK KR","Noto Sans KR",sans-serif;-webkit-font-smoothing:antialiased}
+.shot{background:#0E1327;padding:0;overflow:hidden;display:inline-block;vertical-align:top}
+/* ---------- phone app ---------- */
+.app{width:420px;height:860px;background:#0E1327;color:#fff;padding:26px 22px;display:flex;flex-direction:column;gap:16px}
+.app .top{display:flex;justify-content:space-between;align-items:center}
+.term{font-size:15px;color:#8E97C4;font-weight:500}
+.logo{font-size:17px;font-weight:800;letter-spacing:-.4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:#1E2542;border:1px solid #2F3862;border-radius:999px;padding:6px 11px;font-size:12.5px;color:#C7CDEC}
+.chip.hot{background:#3A1E2B;border-color:#7A2C3C;color:#FF9AA0}
+.hero{background:#1A2140;border-radius:22px;padding:20px 18px 16px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative}
+.bubble{background:#fff;color:#12172B;font-size:16px;font-weight:800;padding:9px 16px;border-radius:14px;position:relative}
+.bubble:after{content:"";position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);border:8px solid transparent;border-top-color:#fff;border-bottom:0}
+.lvl{display:flex;align-items:center;gap:8px;margin-top:2px}
+.lvdot{width:9px;height:9px;border-radius:50%}
+.lvname{font-size:22px;font-weight:900;letter-spacing:-.6px}
+.lvsub{font-size:12.5px;color:#8E97C4}
+.card{background:#1A2140;border-radius:20px;padding:17px 18px}
+.card h4{font-size:13px;color:#8E97C4;font-weight:600;margin-bottom:12px}
+/* timeline */
+.tl{display:flex;align-items:flex-end;gap:4px;height:104px}
+.tl .b{flex:1;border-radius:4px 4px 2px 2px;position:relative}
+.tlx{display:flex;gap:4px;margin-top:7px}
+.tlx span{flex:1;text-align:center;font-size:9px;color:#5D6796}
+.peak{position:absolute;top:-19px;left:50%;transform:translateX(-50%);font-size:10px;color:#FF5A5F;font-weight:800;white-space:nowrap}
+/* suggestion */
+.sug{background:#20284C;border:1.5px solid #3D4A86;border-radius:18px;padding:16px 17px}
+.sug .q{font-size:15px;font-weight:800;margin-bottom:12px;letter-spacing:-.3px}
+.sugrow{display:flex;align-items:center;justify-content:space-between;background:#141B36;border-radius:13px;padding:11px 13px}
+.sugrow .nm{font-size:14px;font-weight:700}
+.sugrow .dt{font-size:11px;color:#8E97C4;margin-top:3px}
+.btn{background:#FF5A5F;color:#fff;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:800;white-space:nowrap}
+.dropto{display:flex;align-items:center;gap:7px;margin-top:11px;font-size:12px;color:#8E97C4}
+.pill{padding:3px 9px;border-radius:999px;font-size:11px;font-weight:800}
+/* week detail */
+.wk{display:flex;flex-direction:column;gap:9px}
+.wkrow{display:flex;gap:11px;align-items:flex-start;background:#141B36;border-radius:13px;padding:12px 13px}
+.ic{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex:none}
+.wkrow .t{font-size:13.5px;font-weight:700;line-height:1.35}
+.wkrow .s{font-size:11.5px;color:#8E97C4;margin-top:3px}
+.conf{font-size:10px;padding:2px 7px;border-radius:5px;font-weight:800;flex:none}
+/* ---------- wide panels ---------- */
+.wide{width:1240px;background:#fff;padding:0}
+.ba{display:flex;align-items:stretch;gap:0;width:1240px;background:#F4F6FB}
+.bacol{flex:1;padding:34px 36px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.bacol.l{background:#FFF1F1}
+.bacol.r{background:#EFFAF6}
+.baarrow{width:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;background:#fff}
+.baarrow .ar{font-size:36px;color:#3D4A86}
+.baarrow .lab{font-size:14px;font-weight:800;color:#12172B;text-align:center;line-height:1.4}
+.batag{font-size:13px;font-weight:800;color:#6A73A0;letter-spacing:.6px}
+.baname{font-size:30px;font-weight:900;letter-spacing:-.8px;color:#12172B}
+.tlw{display:flex;align-items:flex-end;gap:5px;height:118px;width:100%}
+.tlw .b{flex:1;border-radius:5px 5px 2px 2px}
+/* character sheet */
+.sheet{display:flex;width:1240px;background:#fff}
+.scol{flex:1;padding:26px 10px 22px;display:flex;flex-direction:column;align-items:center;gap:9px;border-right:1px solid #E7EAF4}
+.scol:last-child{border-right:0}
+.sname{font-size:19px;font-weight:900;color:#12172B;letter-spacing:-.5px}
+.sline{font-size:13px;color:#6A73A0;text-align:center;line-height:1.45;min-height:38px;padding:0 6px}
+.sbar{width:54px;height:6px;border-radius:3px}
+/* gif frames */
+.gif{display:flex;width:1180px;background:#fff;align-items:center;justify-content:center;gap:0;padding:18px 0}
+.gcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px}
+.gcap{font-size:14px;color:#6A73A0;font-weight:700}
+.garrow{font-size:28px;color:#C3C9E0}
+/* share card */
+.share{width:520px;height:650px;background:linear-gradient(170deg,#1A2140 0%,#0E1327 100%);color:#fff;padding:36px 32px;display:flex;flex-direction:column;align-items:center;justify-content:space-between}
+.share .hd{font-size:15px;color:#8E97C4;font-weight:700;letter-spacing:.5px}
+.share .ty{font-size:34px;font-weight:900;letter-spacing:-1px;text-align:center;line-height:1.25}
+.share .qt{font-size:17px;color:#FFD1D3;font-weight:700;text-align:center}
+.share .ft{font-size:13px;color:#6A73A0;font-weight:600}
+.share .warn{background:#2A1C33;border-radius:12px;padding:10px 18px;font-size:13.5px;color:#FFB3B6;font-weight:700}
+/* engine diagram */
+.eng{width:1240px;background:#fff;padding:30px 34px;display:flex;align-items:center;gap:0}
+.ebox{flex:1;border-radius:18px;padding:20px 20px;background:#F4F6FB}
+.ebox.hidden{background:#EDEFF7;border:2px dashed #AAB2D4}
+.ebox h5{font-size:12.5px;font-weight:800;color:#6A73A0;letter-spacing:.8px;margin-bottom:12px}
+.erow{display:flex;justify-content:space-between;font-size:14px;color:#12172B;padding:6px 0;font-weight:600}
+.erow b{font-weight:900;color:#FF5A5F}
+.etot{display:flex;justify-content:space-between;font-size:16px;font-weight:900;color:#12172B;border-top:2px solid #D9DEEF;margin-top:8px;padding-top:9px}
+.earr{width:74px;text-align:center;font-size:30px;color:#AAB2D4}
+.eyes{font-size:14px;color:#12172B;font-weight:600;line-height:1.7}
+.tag{display:inline-block;font-size:11px;font-weight:900;padding:4px 9px;border-radius:6px;margin-bottom:9px}
+</style></head><body>
+<div id="root"></div>
+<script>
+const C={1:"#4ECDC4",2:"#8FD96B",3:"#FFD93D",4:"#FF9F45",5:"#FF5A5F"};
+function ch(m,s,am){ // m:1..5 mood, s: scale px width
+  const col={1:"#BFE9FF",2:"#CFE7FB",3:"#D6DAE6",4:"#C9CEDD",5:"#AEB4C8"}[m];
+  const eyes={
+    1:'<path d="M80 56 Q86 48 92 56" stroke="#2A3050" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M110 56 Q116 48 122 56" stroke="#2A3050" stroke-width="4.5" fill="none" stroke-linecap="round"/>',
+    2:'<circle cx="86" cy="55" r="4.2" fill="#2A3050"/><circle cx="116" cy="55" r="4.2" fill="#2A3050"/>',
+    3:'<circle cx="86" cy="56" r="4" fill="#2A3050"/><circle cx="116" cy="56" r="4" fill="#2A3050"/><path d="M132 48 q5 9 0 12 q-5 -3 0 -12" fill="#7FC7F5"/>',
+    4:'<circle cx="86" cy="55" r="6.5" fill="#fff" stroke="#2A3050" stroke-width="3"/><circle cx="116" cy="55" r="6.5" fill="#fff" stroke="#2A3050" stroke-width="3"/><circle cx="86" cy="56" r="2.6" fill="#2A3050"/><circle cx="116" cy="56" r="2.6" fill="#2A3050"/>',
+    5:'<path d="M79 50 L93 58 M79 58 L93 50" stroke="#2A3050" stroke-width="4.5" stroke-linecap="round"/><path d="M109 50 L123 58 M109 58 L123 50" stroke="#2A3050" stroke-width="4.5" stroke-linecap="round"/>'
+  }[m];
+  const mouth={
+    1:'<path d="M88 70 Q101 84 114 70" stroke="#2A3050" stroke-width="4.5" fill="none" stroke-linecap="round"/>',
+    2:'<path d="M92 72 Q101 79 110 72" stroke="#2A3050" stroke-width="4.5" fill="none" stroke-linecap="round"/>',
+    3:'<path d="M92 75 L110 75" stroke="#2A3050" stroke-width="4.5" stroke-linecap="round"/>',
+    4:'<ellipse cx="101" cy="75" rx="7" ry="9" fill="#2A3050"/>',
+    5:'<ellipse cx="101" cy="76" rx="11" ry="13" fill="#2A3050"/><ellipse cx="101" cy="81" rx="6" ry="5" fill="#FF7A7F"/>'
+  }[m];
+  const arms={
+    1:'<path d="M56 84 L26 48" stroke="'+col+'" stroke-width="12" stroke-linecap="round"/><circle cx="24" cy="45" r="8" fill="'+col+'"/><path d="M146 84 L176 48" stroke="'+col+'" stroke-width="12" stroke-linecap="round"/><circle cx="178" cy="45" r="8" fill="'+col+'"/>',
+    2:'<path d="M56 86 L24 78" stroke="'+col+'" stroke-width="12" stroke-linecap="round"/><circle cx="21" cy="77" r="8" fill="'+col+'"/><path d="M146 86 L178 78" stroke="'+col+'" stroke-width="12" stroke-linecap="round"/><circle cx="181" cy="77" r="8" fill="'+col+'"/>',
+    3:'<path d="M56 86 L34 118" stroke="'+col+'" stroke-width="12" stroke-linecap="round"/><circle cx="32" cy="122" r="8" fill="'+col+'"/><path d="M146 86 L168 118" stroke="'+col+'" stroke-width="12" stroke-linecap="round"/><circle cx="170" cy="122" r="8" fill="'+col+'"/>',
+    4:'<path d="M56 84 L28 50" stroke="'+col+'" stroke-width="12" stroke-linecap="round"/><circle cx="26" cy="47" r="8" fill="'+col+'"/><path d="M146 86 L170 120" stroke="'+col+'" stroke-width="12" stroke-linecap="round"/><circle cx="172" cy="124" r="8" fill="'+col+'"/>',
+    5:'<path d="M54 82 L26 132" stroke="'+col+'" stroke-width="14" stroke-linecap="round"/><circle cx="24" cy="136" r="9.5" fill="'+col+'"/><path d="M148 82 L176 132" stroke="'+col+'" stroke-width="14" stroke-linecap="round"/><circle cx="178" cy="136" r="9.5" fill="'+col+'"/><path d="M40 58 L30 86 M162 58 L172 86" stroke="#FF5A5F" stroke-width="5" stroke-linecap="round" opacity=".8"/><path d="M22 66 L14 96 M180 66 L188 96" stroke="#FF5A5F" stroke-width="4" stroke-linecap="round" opacity=".45"/>'
+  }[am||m];
+  const bolt=m===5?'<path d="M101 -4 L88 26 L100 26 L92 50 L118 20 L104 20 L114 -4 Z" fill="#FFD93D"/>':'';
+  return '<svg width="'+s+'" viewBox="-6 -10 214 160" xmlns="http://www.w3.org/2000/svg">'+arms+
+  '<g><circle cx="66" cy="72" r="25" fill="'+col+'"/><circle cx="101" cy="55" r="35" fill="'+col+'"/><circle cx="137" cy="72" r="24" fill="'+col+'"/><rect x="62" y="70" width="78" height="32" rx="16" fill="'+col+'"/></g>'+
+  eyes+mouth+bolt+'</svg>';
+}
+function tl(vals,cls,peakIdx,peakTxt){
+  return vals.map((v,i)=>{
+    const c = v>=85?C[5] : v>=65?C[4] : v>=45?C[3] : v>=25?C[2] : C[1];
+    const p = (peakIdx===i&&peakTxt)?'<span class="peak">'+peakTxt+'</span>':'';
+    return '<div class="'+cls+' b" style="height:'+Math.max(v,7)+'%;background:'+c+'">'+p+'</div>';
+  }).join('');
+}
+const HIGH=[12,18,22,30,26,48,72,40,58,96,78,52,60,88,92,46];
+const LOW =[12,16,20,26,24,38,52,34,44,62,50,40,46,58,60,34];
+
+const R=document.getElementById('root');
+R.innerHTML=`
+<!-- 1. MAIN RESULT -->
+<div class="shot" id="s1"><div class="app">
+  <div class="top"><div class="logo">학기예보</div><div class="term">2026-1학기 · 18학점</div></div>
+  <div class="chips">
+    <span class="chip hot">캡스톤설계</span><span class="chip">로봇제어</span><span class="chip hot">디지털시스템설계</span>
+    <span class="chip">확률과통계</span><span class="chip">임베디드SW</span><span class="chip">공학작문</span>
+  </div>
+  <div class="hero">
+    <div class="bubble">그것만은 안 돼…</div>
+    ${ch(5,232)}
+    <div class="lvl"><span class="lvdot" style="background:${C[5]}"></span><span class="lvname">최고 경보</span></div>
+    <div class="lvsub">5단계 중 5단계 · 이번 학기 상위 6%</div>
+  </div>
+  <div class="card">
+    <h4>주차별 부담</h4>
+    <div class="tl">${tl(HIGH,'',9,'10주차 최대 고비')}</div>
+    <div class="tlx">${HIGH.map((_,i)=>'<span>'+(i%3===0?(i+1):'')+'</span>').join('')}</div>
+  </div>
+  <div class="sug">
+    <div class="q">이 과목 하나만 빼면 두 단계 내려가요</div>
+    <div class="sugrow">
+      <div><div class="nm">디지털시스템설계</div><div class="dt">매주 과제 · 팀 프로젝트 · 기말 발표</div></div>
+      <div class="btn">빼보기</div>
+    </div>
+    <div class="dropto">
+      <span class="pill" style="background:${C[5]};color:#fff">최고 경보</span>→
+      <span class="pill" style="background:${C[4]};color:#3A2000">경고</span>→
+      <span class="pill" style="background:${C[3]};color:#3A3000">음…</span>
+    </div>
+  </div>
+</div></div>
+
+<!-- 2. WEEK DETAIL -->
+<div class="shot" id="s2"><div class="app" style="height:960px">
+  <div class="top"><div class="logo">10주차 상세</div><div class="term">5월 4일 주</div></div>
+  <div class="card">
+    <h4>주차별 부담</h4>
+    <div class="tl">${tl(HIGH,'',9,'여기')}</div>
+    <div class="tlx">${HIGH.map((_,i)=>'<span>'+(i%3===0?(i+1):'')+'</span>').join('')}</div>
+  </div>
+  <div class="hero" style="padding:16px 18px">
+    <div class="bubble" style="font-size:15px">이 주는 진짜 조심해</div>
+    ${ch(4,180)}
+  </div>
+  <div class="card" style="flex:1">
+    <h4>이 주에 겹치는 것 — 과제 3 · 발표 1 · 시험 2</h4>
+    <div class="wk">
+      <div class="wkrow"><div class="ic" style="background:#3A2436;color:#FF9AA0">과제</div>
+        <div style="flex:1"><div class="t">디지털시스템설계 — 주간 과제 #7</div><div class="s">매주 제출 · 평가비중 20%</div></div>
+        <div class="conf" style="background:#1D3B33;color:#4ECDC4">검증 A</div></div>
+      <div class="wkrow"><div class="ic" style="background:#3A2436;color:#FF9AA0">과제</div>
+        <div style="flex:1"><div class="t">임베디드SW — 실습 보고서</div><div class="s">격주 제출 · 평가비중 15%</div></div>
+        <div class="conf" style="background:#1D3B33;color:#4ECDC4">검증 A</div></div>
+      <div class="wkrow"><div class="ic" style="background:#3A2436;color:#FF9AA0">과제</div>
+        <div style="flex:1"><div class="t">공학작문 — 리포트 초안</div><div class="s">비정기 · 평가비중 10%</div></div>
+        <div class="conf" style="background:#3A3320;color:#FFD93D">자료 B</div></div>
+      <div class="wkrow"><div class="ic" style="background:#2B2447;color:#B9A6FF">발표</div>
+        <div style="flex:1"><div class="t">캡스톤설계 — 중간 발표</div><div class="s">팀 프로젝트 · 평가비중 25%</div></div>
+        <div class="conf" style="background:#1D3B33;color:#4ECDC4">검증 A</div></div>
+      <div class="wkrow"><div class="ic" style="background:#3A1E2B;color:#FF7A7F">시험</div>
+        <div style="flex:1"><div class="t">로봇제어 — 중간고사</div><div class="s">평가비중 30%</div></div>
+        <div class="conf" style="background:#2C3050;color:#8E97C4">부족 C</div></div>
+      <div class="wkrow"><div class="ic" style="background:#3A1E2B;color:#FF7A7F">시험</div>
+        <div style="flex:1"><div class="t">확률과통계 — 중간고사</div><div class="s">평가비중 35%</div></div>
+        <div class="conf" style="background:#1D3B33;color:#4ECDC4">검증 A</div></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- 3. BEFORE / AFTER -->
+<div class="shot" id="s3"><div class="ba">
+  <div class="bacol l">
+    <div class="batag">BEFORE</div>
+    ${ch(5,238)}
+    <div class="baname">최고 경보</div>
+    <div class="tlw">${tl(HIGH,'','','')}</div>
+  </div>
+  <div class="baarrow"><div class="ar">→</div><div class="lab">디지털시스템설계<br>빼기</div></div>
+  <div class="bacol r">
+    <div class="batag">AFTER</div>
+    ${ch(3,238)}
+    <div class="baname">음…</div>
+    <div class="tlw">${tl(LOW,'','','')}</div>
+  </div>
+</div></div>
+
+<!-- 4. CHARACTER SHEET -->
+<div class="shot" id="s4"><div class="sheet">
+  <div class="scol">${ch(1,150)}<div class="sname">놀자</div><div class="sline">이 정도면 산책이지~<br>동아리 하나 더?</div><div class="sbar" style="background:${C[1]}"></div></div>
+  <div class="scol">${ch(2,150)}<div class="sname">할 만해</div><div class="sline">사람답게 살 수 있는<br>학기예요</div><div class="sbar" style="background:${C[2]}"></div></div>
+  <div class="scol">${ch(3,150)}<div class="sname">음…</div><div class="sline">평범한 광운인의 학기.<br>평범이 제일 무섭죠</div><div class="sbar" style="background:${C[3]}"></div></div>
+  <div class="scol">${ch(4,150)}<div class="sname">야, 잠깐</div><div class="sline">10주차에 우산으로는<br>안 됩니다</div><div class="sbar" style="background:${C[4]}"></div></div>
+  <div class="scol">${ch(5,150)}<div class="sname">그것만은 안 돼</div><div class="sline">제발 한 과목만<br>빼주세요…</div><div class="sbar" style="background:${C[5]}"></div></div>
+</div></div>
+
+<!-- 5. GIF FRAMES -->
+<div class="shot" id="s5"><div class="gif">
+  <div class="gcol">${ch(4,215,1)}<div class="gcap">1 — 팔 올림</div></div>
+  <div class="garrow">▶</div>
+  <div class="gcol">${ch(4,215,2)}<div class="gcap">2 — 내리는 중</div></div>
+  <div class="garrow">▶</div>
+  <div class="gcol">${ch(5,215,5)}<div class="gcap">3 — 끝까지 내림 · 반복</div></div>
+</div></div>
+
+<!-- 6. SHARE CARD -->
+<div class="shot" id="s6"><div class="share">
+  <div class="hd">2026-1학기 학기예보</div>
+  ${ch(5,250)}
+  <div>
+    <div class="ty">벼락치기<br>팀플 지옥러</div>
+  </div>
+  <div class="qt">“제발 한 과목만 빼주세요”</div>
+  <div class="warn">10주차 최대 고비 · 과제3 발표1 시험2</div>
+  <div class="ft">내 학기도 예보받기 →</div>
+</div></div>
+
+<!-- 8. COVER CHARACTER -->
+<div class="shot" id="s8"><div style="width:560px;height:430px;background:#0E1327;display:flex;align-items:center;justify-content:center">${ch(5,470)}</div></div>
+
+<!-- 7. ENGINE -->
+<div class="shot" id="s7"><div class="eng">
+  <div class="ebox hidden">
+    <h5>백엔드에서만 계산 · 사용자에게 안 보임</h5>
+    <div class="erow"><span>매주 과제</span><b>+10</b></div>
+    <div class="erow"><span>팀 프로젝트</span><b>+15</b></div>
+    <div class="erow"><span>시험 3회</span><b>+8</b></div>
+    <div class="erow"><span>발표 2회</span><b>+6</b></div>
+    <div class="erow"><span>기타 과목 합</span><b>+43</b></div>
+    <div class="etot"><span>합계</span><span>82</span></div>
+  </div>
+  <div class="earr">→</div>
+  <div class="ebox">
+    <h5>임계치로 단계 결정</h5>
+    <div class="erow"><span>81 이상</span><span style="color:${C[5]};font-weight:900">최고 경보</span></div>
+    <div class="erow"><span>61 – 80</span><span style="color:${C[4]};font-weight:900">경고</span></div>
+    <div class="erow"><span>41 – 60</span><span style="color:#C9A600;font-weight:900">음…</span></div>
+    <div class="erow"><span>21 – 40</span><span style="color:#5FA53A;font-weight:900">할 만해</span></div>
+    <div class="erow"><span>20 이하</span><span style="color:#1FA89C;font-weight:900">놀자</span></div>
+  </div>
+  <div class="earr">→</div>
+  <div class="ebox" style="background:#FFF1F1">
+    <h5>빼면 단계가 내려가는 과목을 역산</h5>
+    <div class="eyes">
+      82 − 10<span style="color:#8E97C4">(매주 과제)</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;− 15<span style="color:#8E97C4">(팀 프로젝트)</span> = <b style="color:#12172B">57</b><br><br>
+      <span style="font-size:15px;font-weight:900">“디지털시스템설계를 빼면<br>두 단계 내려갑니다”</span>
+    </div>
+  </div>
+</div></div>
+`;
+</script></body></html>
