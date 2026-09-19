@@ -29,9 +29,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: errors[0], errors }, { status: 400 });
   }
 
+  // id 를 서버에서 만들어 둔다.
+  //   RLS 가 report 에 SELECT 정책을 두지 않으므로 (선배는 넣기만 하고 읽지 못한다),
+  //   INSERT ... RETURNING 이 거부된다 — PostgreSQL 은 RETURNING 에 SELECT 를 요구한다.
+  //   따라서 저장된 줄을 돌려받지 않고, 우리가 정한 id 를 그대로 확인 화면에 쓴다.
+  const id = crypto.randomUUID();
+
   // 클라이언트가 보낸 값 중 우리가 아는 컬럼만 추린다. source 는 서버가 정한다.
   const r = body as ReportRow;
   const row = {
+    id,
     dept_code: r.dept_code,
     term: r.term,
     course_name: r.course_name.trim(),
@@ -58,8 +65,8 @@ export async function POST(request: Request) {
       apikey: key,
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/json",
-      // 저장된 id 를 돌려받아 확인 화면에 보여 준다.
-      Prefer: "return=representation",
+      // 돌려받지 않는다. 위 주석 참고.
+      Prefer: "return=minimal",
     },
     body: JSON.stringify(row),
     cache: "no-store",
@@ -67,13 +74,17 @@ export async function POST(request: Request) {
 
   if (!res.ok) {
     const detail = await res.text();
+    // Vercel → Logs 에서 이 줄을 보면 원인을 바로 알 수 있다.
+    //   404 / PGRST205  → 테이블이 없다. db/schema.sql 을 실행했는지 확인
+    //   401 / 403       → anon key 가 잘못됐거나 RLS 정책이 막고 있다
     console.error("Supabase insert 실패", res.status, detail);
-    return NextResponse.json(
-      { error: "저장하지 못했습니다. 잠시 후 다시 시도해 주세요." },
-      { status: 502 },
-    );
+
+    const hint =
+      res.status === 404
+        ? "데이터베이스 준비가 끝나지 않았습니다. 팀에 알려 주세요."
+        : "저장하지 못했습니다. 잠시 후 다시 시도해 주세요.";
+    return NextResponse.json({ error: hint }, { status: 502 });
   }
 
-  const saved = (await res.json()) as Array<{ id: string }>;
-  return NextResponse.json({ id: saved[0]?.id ?? null }, { status: 201 });
+  return NextResponse.json({ id }, { status: 201 });
 }

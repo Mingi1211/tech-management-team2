@@ -313,8 +313,21 @@ create policy track_course_read on track_course for select to anon, authenticate
 -- load_event 에는 정책을 두지 않는다 → anon 접근 불가.
 -- 트리거는 security definer 라 그대로 쓴다.
 
+-- 테이블 권한. Supabase 는 public 스키마에 기본 권한이 걸려 있어 대개 이미 적용돼 있지만,
+-- 명시해 두면 이 파일만으로 어디서든 같은 상태가 된다. 실제 접근은 위 RLS 정책이 결정한다.
+grant usage on schema public to anon, authenticated;
+grant insert on report to anon, authenticated;
+grant select on department, course, prerequisite, track, track_course
+  to anon, authenticated;
+
 -- 뷰는 소유자 권한으로 실행되므로 아래 grant 만으로 집계가 공개된다.
 grant select on v_week_load, v_course_confidence to anon, authenticated;
+
+-- ⚠️ report 에 SELECT 정책을 만들지 않는 이유 (의도된 것이다)
+--    선배가 남의 응답을 읽을 이유가 없기 때문이다. 다만 그 결과로
+--    INSERT ... RETURNING 이 거부된다 — PostgreSQL 은 RETURNING 에 SELECT 를 요구한다.
+--    그래서 앱은 id 를 직접 만들어 보내고 Prefer: return=minimal 로 저장한다.
+--    (app/api/reports/route.ts 참고)
 
 
 -- =============================================================================
