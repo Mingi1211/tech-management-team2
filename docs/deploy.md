@@ -70,7 +70,18 @@ select (select count(*) from department) as 학부,   -- 3 이어야 한다
 > **`service_role` 키를 넣으면 안 된다.** 그 키는 RLS 를 무시하고 모든 데이터를
 > 읽고 지울 수 있다. 반드시 `anon` 쪽을 쓴다.
 
-환경 선택지(Production · Preview · Development)는 **셋 다 체크**한다.
+**환경(Environment) 선택** — 드롭다운에서 **`Production and Preview`** 를 고른다
+(기본값이므로 대개 그대로 두면 된다).
+
+| 선택지 | 쓰임 |
+|---|---|
+| **Production and Preview** | 실제 배포 주소 + 브랜치 미리보기 배포. **우리가 쓰는 건 전부 여기** |
+| Production | 실배포만 |
+| Preview | 미리보기만 |
+| Development | `vercel dev` 로 로컬 실행할 때만 |
+
+`Development` 는 필요 없다. 로컬에서는 `vercel dev` 가 아니라 `npm run dev` 를 쓰고,
+그쪽은 `.env.local` 파일에서 값을 읽는다.
 
 ### 2-4. 배포
 
