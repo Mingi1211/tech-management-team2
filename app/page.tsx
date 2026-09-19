@@ -535,7 +535,7 @@ export default function Page() {
             ? "저장하는 중…"
             : progress.ready
               ? "제출하기"
-              : `제출하기 (${progress.ok}/${progress.total})`}
+              : `아직 ${progress.total - progress.ok}개 남았어요`}
         </button>
         <div className="msg">{msg}</div>
       </div>
