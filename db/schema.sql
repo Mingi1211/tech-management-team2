@@ -3,7 +3,10 @@
 --  광운대 기술과경영 2조
 --
 --  사용법 : Supabase 대시보드 → SQL Editor → 이 파일 전체를 붙여넣고 Run (1회)
---  재실행 : 맨 아래 "초기화" 블록의 주석을 풀고 함께 실행하면 전부 지우고 다시 만든다
+--
+--  "relation ... already exists" 오류가 나면 이미 한 번 실행된 것이다.
+--  db/reset.sql 을 먼저 Run 해서 전부 지운 뒤, 이 파일을 다시 Run 한다.
+--  (쌓인 응답도 함께 사라지므로, 수집을 시작한 뒤에는 reset 을 쓰지 말 것)
 --
 --  테이블은 두 종류다. 채우는 방법이 다르니 구분해 둘 것.
 --    [참조]  department · course · prerequisite · track · track_course
@@ -33,7 +36,8 @@ create table department (
 insert into department (code, name) values
   ('robot',    '로봇학부'),
   ('infoconv', '정보융합학부'),
-  ('software', '소프트웨어학부');
+  ('software', '소프트웨어학부')
+on conflict (code) do nothing;
 
 
 create table course (
@@ -322,7 +326,8 @@ insert into track (dept_code, name, description) values
   ('robot', '제어',      '제어 이론과 로봇 동역학 중심'),
   ('robot', '비전',      '영상 처리와 인식 중심'),
   ('robot', '인지 · AI', '학습 기반 판단과 지능 시스템 중심'),
-  ('robot', '임베디드',  '마이크로프로세서와 실시간 시스템 중심');
+  ('robot', '임베디드',  '마이크로프로세서와 실시간 시스템 중심')
+on conflict (dept_code, name) do nothing;
 
 
 -- =============================================================================
@@ -352,11 +357,5 @@ delete from report where source = 'seed';
 
 
 -- =============================================================================
---  초기화 — 전부 지우고 다시 만들 때만 주석을 풀어 이 파일 맨 앞에서 실행
+--  전부 지우고 다시 만들려면 db/reset.sql 을 먼저 실행한다
 -- =============================================================================
-/*
-drop view  if exists v_week_load, v_course_confidence;
-drop table if exists load_event, report, track_course, track,
-                     prerequisite, course, department cascade;
-drop function if exists build_load_events(), week_of(text);
-*/
