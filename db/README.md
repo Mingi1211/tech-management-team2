@@ -58,17 +58,27 @@ PostgreSQL 16 에서 실제로 실행해 확인했다.
 
 ## 시드 파일
 
-**실행 순서**는 이렇다. 셋 다 **여러 번 돌려도 안전하다.**
+**실행 순서**는 이렇다. 전부 **여러 번 돌려도 안전하다.**
 
 ```
-schema.sql  →  seed-robot-courses.sql  →  seed-lab-reports.sql
+schema.sql
+  → seed-robot-courses.sql
+  → seed-infoconv-courses.sql
+  → seed-software-courses.sql
+  → seed-lab-reports.sql
 ```
 
 | 파일 | 내용 | 상태 |
 |---|---|---|
-| `seed-robot-courses.sql` | **로봇학부 35과목** (1학기 18 · 2학기 17) | 2026-09-19 |
-| `seed-lab-reports.sql` | **로봇학실험 1~4 부담 데이터** — 폼 없이 직접 | 2026-09-19 |
-| — | 소프트웨어학부 · 정보융합학부 과목 | 미작성 |
+| `seed-robot-courses.sql` | 로봇학부 **35과목** (1학기 18 · 2학기 17) | 완료 |
+| `seed-infoconv-courses.sql` | 정보융합학부 **31과목** (1학기 16 · 2학기 15) | 완료 |
+| `seed-software-courses.sql` | 소프트웨어학부 **8과목** | 🚧 1학기 앞부분만 |
+| `seed-lab-reports.sql` | 로봇학실험 1~4 부담 데이터 — 폼 없이 직접 | 완료 |
+
+현재 **74과목.** 목표 150과목까지 소프트웨어학부 나머지와 세 학부의 전공필수가 남았다.
+
+> 세 학부 화면 모두 **전공선택만** 잡혔다. 전공필수는 목록 윗부분이 잘려 있었다.
+> 로봇학부는 그중 일부(로봇운동학·AI로봇실험3·로봇학실험)를 따로 확인해 넣었다.
 
 ### `course` 가 답하는 것
 
