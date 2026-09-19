@@ -240,10 +240,15 @@ select
   r.professor,
   e.week,
   count(distinct r.id)                                   as report_count,
-  count(*) filter (where e.kind = 'exam')                as exams,
-  count(*) filter (where e.kind = 'project_due')         as projects,
-  count(*) filter (where e.kind = 'quiz')                as quizzes,
-  count(*) filter (where e.kind = 'assignment')          as assignments,
+  -- 아래 값은 모두 "응답 1건당 평균" 이다. load_score 와 단위를 맞춘다.
+  round(count(*) filter (where e.kind = 'exam')::numeric
+        / count(distinct r.id), 2)                       as exams,
+  round(count(*) filter (where e.kind = 'project_due')::numeric
+        / count(distinct r.id), 2)                       as projects,
+  round(count(*) filter (where e.kind = 'quiz')::numeric
+        / count(distinct r.id), 2)                       as quizzes,
+  round(count(*) filter (where e.kind = 'assignment')::numeric
+        / count(distinct r.id), 2)                       as assignments,
   round(
     sum(case e.kind
           when 'exam'         then 3.0
@@ -257,7 +262,7 @@ join load_event e on e.report_id = r.id
 group by r.course_key, r.dept_code, r.term, r.course_name, r.professor, e.week;
 
 comment on view v_week_load is
-  '과목별 · 주차별 평균 부담. load_score 가중치는 설계 계획서 §5.1 초안이며 검증 후 보정한다';
+  '과목별 · 주차별 평균 부담. 모든 수치는 응답 1건당 평균이다. load_score 가중치는 설계 계획서 §5.1 초안이며 검증 후 보정한다';
 
 
 -- 응답이 몇 건 모였는지와 신뢰도 등급

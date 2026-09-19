@@ -33,23 +33,42 @@
 ## 이 레포의 구성
 
 ```
+app/                        Next.js 앱 (App Router)
+  page.tsx                  선배 수강 경험 입력 폼
+  api/reports/route.ts      제출 받기 → 검증 → Supabase 저장
+  layout.tsx  globals.css
+lib/report.ts               타입 · 주차 정규화 · 검증 (폼과 API 가 함께 쓴다)
+db/
+  schema.sql                Supabase 스키마 — 테이블 7개 · 트리거 · RLS · 집계 뷰
+  README.md                 적용 방법과 권한 주의
 docs/
-  team-project-topic.md              주제안 전문 — 문제정의 · 범위 · R&R · 예상 질문 방어 시트
-  plan/학업나침반-설계계획.pdf         설계 계획서 9쪽 — 아키텍처 · DB 스키마 · 알고리즘 · 주차별 WBS
-  plan/plan-source.html              위 PDF 원본 (수정 후 재생성 가능)
-  deck/학기예보.pptx                  팀 공유용 덱 10장
-  deck/*.png                         프로토타입 화면 8장
-  deck/prototype-mock.html           위 화면들의 원본 목업
-app/
-  collector/form.html                선배 수강 경험 입력 폼 (프로토타입)
-  collector/README.md                저장 형식과 실배포 이식 방법
+  team-project-topic.md     주제안 전문 — 문제정의 · 범위 · R&R · 예상 질문 방어 시트
+  plan/학업나침반-설계계획.pdf  설계 계획서 9쪽
+  deck/학기예보.pptx          팀 공유용 덱 10장 · 프로토타입 화면 8장
+prototype/collector/        초기 프로토타입 (claude.ai 아티팩트). 문항 검증용으로만 남겨 둔다
 ```
+
+## 실행
+
+```bash
+npm install
+cp .env.example .env.local     # Supabase URL 과 anon key 를 채운다
+npm run dev                    # http://localhost:3000
+```
+
+`.env.local` 은 커밋되지 않는다. `service_role key` 는 어디에도 넣지 않는다.
+
+## 배포
+
+Vercel 에 이 레포를 연결하고, 프로젝트 설정의 Environment Variables 에
+`SUPABASE_URL` 과 `SUPABASE_ANON_KEY` 를 넣는다. 배포 주소로 QR 을 만들어 배포한다.
 
 ## 지금 상태
 
 - 주제·범위 확정, 설계 계획서 작성 완료
-- 입력 폼 프로토타입 동작 확인 — 저장·조회·CSV 내보내기까지 검증됨
-- **다음** — 팀원 8명이 각자 수강한 과목을 입력해 문항 검증 → 실배포용 폼 확정
+- Supabase 스키마 작성 — PostgreSQL 16 에서 실행 검증 완료
+- 입력 폼 Next.js 이식 완료 — 빌드 · 제출 · 검증 · 저장 경로까지 확인
+- **다음** — 교과과정표 150과목 입력, Vercel 배포, 팀원 8명 문항 검증
 
 ## 일정의 핵심
 
