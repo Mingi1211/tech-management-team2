@@ -43,17 +43,23 @@ on conflict (code) do nothing;
 create table course (
   id            bigserial primary key,
   dept_code     text    not null references department(code),
-  code          text,                    -- 학수번호. 모르면 비워도 된다
+  code          text,                    -- 학수번호. 참고용이라 비워도 된다
   name          text    not null,
   credits       smallint,
   course_type   text    check (course_type in ('전공필수','전공선택','기초','교양')),
   typical_year  smallint check (typical_year between 1 and 4),
   typical_term  smallint check (typical_term in (0, 1, 2)),   -- 0 = 매학기 개설
+  professors    text[]  not null default '{}',   -- 담당 교수. 분반이 여럿이면 여럿
   note          text,
   unique (dept_code, name)
 );
 
 comment on column course.typical_term is '0=매학기, 1=1학기, 2=2학기. 로드맵이 학기를 배치할 때 쓴다';
+comment on column course.professors  is
+  '입력 폼이 "과목 → 교수" 선택지를 만들 때 쓴다. 자유 입력을 없애는 것이 목적이므로 '
+  '교수명 표기도 여기 있는 값이 정본이다. 분반이 여럿이면 배열에 모두 넣는다';
+comment on column course.code is
+  '학수번호 I050-학년-과목번호. 두 번째 자리가 개설학년이라 typical_year 를 여기서 얻는다. 검색에는 쓰지 않는다';
 
 
 -- 선수과목 관계. hard = true 면 반드시 먼저 들어야 하는 과목
