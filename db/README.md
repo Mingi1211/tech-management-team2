@@ -66,6 +66,7 @@ schema.sql
   → seed-infoconv-courses.sql
   → seed-software-courses.sql
   → seed-lab-reports.sql
+  → seed-tracks.sql
 ```
 
 | 파일 | 내용 | 상태 |
@@ -74,6 +75,8 @@ schema.sql
 | `seed-infoconv-courses.sql` | 정보융합학부 **31과목** (1학기 16 · 2학기 15) | 완료 |
 | `seed-software-courses.sql` | 소프트웨어학부 **36과목** (1학기 20 · 2학기 16) | 완료 |
 | `seed-lab-reports.sql` | 로봇학실험 1~4 부담 데이터 — 폼 없이 직접 | 완료 |
+| `seed-tracks.sql` | 관심분야 **12트랙 · 93건 매핑** | **[초안]** 검토 필요 |
+| `check-reports.sql` | 응답 점검 — 오타·중복·이상치 찾기 | 주 1회 |
 
 **3개 학부 102과목.**
 
