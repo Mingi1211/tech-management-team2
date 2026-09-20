@@ -76,7 +76,7 @@ schema.sql
 | `seed-software-courses.sql` | 소프트웨어학부 **36과목** (1학기 20 · 2학기 16) | 완료 |
 | `seed-lab-reports.sql` | 로봇학실험/AI로봇실험 1~4 부담 데이터 — 폼 없이 직접 | 완료 |
 | `seed-tracks.sql` | 관심분야 **12트랙 · 93건 매핑** | **[초안]** 검토 필요 |
-| `check-reports.sql` | 응답 점검 — 오타·중복·이상치 찾기 | 주 1회 |
+| `check-reports.sql` | **0번** 안 채운 과목 찾기 · **1~4번** 잘못 들어온 응답 찾기 | 주 1회 |
 
 **3개 학부 101과목.**
 

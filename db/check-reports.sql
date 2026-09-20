@@ -7,7 +7,52 @@
 --
 --  사용법 : Supabase → SQL Editor → 필요한 블록만 골라 Run
 --  권장   : 주 1회, 그리고 발표 전 한 번
+--
+--  0번은 "아직 안 채운 과목" 을 뽑는다 — 입력 진행률을 볼 때 이것만 돌리면 된다.
+--  1~4번은 "잘못 들어온 응답" 을 뽑는다.
 -- =============================================================================
+
+
+-- ── 0. 수집 현황 — 아직 안 채운 과목 찾기 ───────────────────────────────────
+
+-- (a) 학부·학기별 커버리지
+select d.name as 학부, c.typical_term as 학기,
+       count(*) as 과목,
+       count(*) filter (where x.건수 > 0) as 응답있음,
+       count(*) filter (where x.건수 = 0) as 응답없음,
+       round(100.0 * count(*) filter (where x.건수 > 0) / count(*)) as 퍼센트
+from course c
+join department d on d.code = c.dept_code
+cross join lateral (
+  select count(*) as 건수 from report r
+   where r.dept_code = c.dept_code and r.course_name = c.name
+) x
+group by 1, 2 order by 1, 2;
+
+-- (b) **아직 응답이 0건인 과목** — 이게 "정량 정보 남은 목록"이다.
+--     전공필수부터, 저학년부터 채우는 순서로 나온다.
+select d.name as 학부, c.course_type as 구분,
+       c.typical_year as 학년, c.typical_term as 학기,
+       c.name as 과목, array_to_string(c.professors, ', ') as 담당교수
+from course c
+join department d on d.code = c.dept_code
+where not exists (
+  select 1 from report r
+   where r.dept_code = c.dept_code and r.course_name = c.name
+)
+order by (c.course_type = '전공필수') desc, c.typical_year, c.typical_term, d.name, c.name;
+
+-- (c) 응답은 있는데 부족한 과목 — 3건 이상이어야 신뢰도 A
+select d.name as 학부, c.name as 과목, x.건수,
+       case when x.건수 >= 3 then 'A' else 'B' end as 신뢰도
+from course c
+join department d on d.code = c.dept_code
+cross join lateral (
+  select count(*) as 건수 from report r
+   where r.dept_code = c.dept_code and r.course_name = c.name
+) x
+where x.건수 between 1 and 2
+order by x.건수, d.name, c.name;
 
 
 -- ── 1. 마스터에 없는 과목명 ──────────────────────────────────────────────────
@@ -84,7 +129,13 @@ select id, course_name, professor, project_type, project_week
 from report
 where project_has and (project_week is null or project_week = 'unknown');
 
--- (e) 부담 이벤트가 하나도 안 생긴 응답 → 사실상 빈 응답
+-- (e) 마스터와 학기가 다른 응답 → 과목명이나 학기 중 하나가 틀렸다
+select r.id, r.course_name, r.term as 입력학기, c.typical_term as 마스터학기
+from report r
+join course c on c.dept_code = r.dept_code and c.name = r.course_name
+where c.typical_term in (1, 2) and c.typical_term <> r.term;
+
+-- (f) 부담 이벤트가 하나도 안 생긴 응답 → 사실상 빈 응답
 select r.id, r.course_name, r.professor, r.created_at
 from report r
 where not exists (select 1 from load_event e where e.report_id = r.id)
