@@ -1,9 +1,10 @@
 -- =============================================================================
---  로봇학실험 1~4 부담 데이터 시드
+--  로봇학실험/AI로봇실험 1~4 부담 데이터 시드
 --  광운대 기술과경영 2조 · 학업나침반
 --
 --  출처 : 사용자 진술 (2026-09-19) — 로봇학부 재학생 직접 확인
---  기준 : 네 과목 모두 운영 방식이 같고, 분반이 달라도 같다
+--  기준 : 네 과목 모두 운영 방식이 같고, 분반이 달라도 같다.
+--         로봇학실험과 AI로봇실험은 사실상 같은 과목이라 한 과목으로 합쳐 두었다
 --
 --         · 프로젝트  15주차 팀 프로젝트, 기말고사를 대체한다
 --         · 중간고사  필기 1회
@@ -31,31 +32,34 @@ insert into report (
   assignment_has, assignment_pattern, assignment_count, assignment_weeks_raw, assignment_weeks,
   exam_mid, exam_final, source
 ) values
-  ('a5b00001-0000-4000-8000-000000000001', 'robot', 1, '로봇학실험1', '분반 공통',
+  ('a5b00001-0000-4000-8000-000000000001', 'robot', 1, '로봇학실험/AI로봇실험1', '분반 공통',
    true, 'team', '15',
    false, 0, '{}',
    true, 'custom', 12, '{}', '{2,3,4,5,6,7,9,10,11,12,13,14}',
    1, 0, 'seed'),
 
-  ('a5b00002-0000-4000-8000-000000000002', 'robot', 2, '로봇학실험2', '분반 공통',
+  ('a5b00002-0000-4000-8000-000000000002', 'robot', 2, '로봇학실험/AI로봇실험2', '분반 공통',
    true, 'team', '15',
    false, 0, '{}',
    true, 'custom', 12, '{}', '{2,3,4,5,6,7,9,10,11,12,13,14}',
    1, 0, 'seed'),
 
-  ('a5b00003-0000-4000-8000-000000000003', 'robot', 1, '로봇학실험3', '분반 공통',
+  ('a5b00003-0000-4000-8000-000000000003', 'robot', 1, '로봇학실험/AI로봇실험3', '분반 공통',
    true, 'team', '15',
    false, 0, '{}',
    true, 'custom', 12, '{}', '{2,3,4,5,6,7,9,10,11,12,13,14}',
    1, 0, 'seed'),
 
-  ('a5b00004-0000-4000-8000-000000000004', 'robot', 2, '로봇학실험4', '분반 공통',
+  ('a5b00004-0000-4000-8000-000000000004', 'robot', 2, '로봇학실험/AI로봇실험4', '분반 공통',
    true, 'team', '15',
    false, 0, '{}',
    true, 'custom', 12, '{}', '{2,3,4,5,6,7,9,10,11,12,13,14}',
    1, 0, 'seed')
 
 on conflict (id) do update set
+  course_name          = excluded.course_name,
+  dept_code            = excluded.dept_code,
+  term                 = excluded.term,
   project_has          = excluded.project_has,
   project_type         = excluded.project_type,
   project_week         = excluded.project_week,
@@ -94,11 +98,11 @@ from report r join load_event e on e.report_id = r.id
 where r.source = 'seed'
 group by r.course_name order by r.course_name;
 
--- 2) 주차별로 어떻게 보이나 (로봇학실험4)
+-- 2) 주차별로 어떻게 보이나 (로봇학실험/AI로봇실험4)
 --    8주차 = 시험 3.0,  15주차 = 프로젝트 2.5,  나머지 = 과제 1.0
 select week, assignments as 과제, exams as 시험, projects as 프로젝트, load_score as 부담
 from v_week_load
-where course_name = '로봇학실험4'
+where course_name = '로봇학실험/AI로봇실험4'
 order by week;
 
 -- 3) 마스터와 연결됐나  → course_id 가 4건 모두 채워져 있어야 한다

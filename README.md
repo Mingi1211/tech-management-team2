@@ -40,10 +40,12 @@ app/                        Next.js 앱 (App Router)
 lib/report.ts               타입 · 주차 정규화 · 검증 (폼과 API 가 함께 쓴다)
 db/
   schema.sql                Supabase 스키마 — 테이블 7개 · 트리거 · RLS · 집계 뷰
-  seed-robot-courses.sql    로봇학부 교과과정 35과목
+  seed-robot-courses.sql    로봇학부 교과과정 34과목
   seed-infoconv-courses.sql 정보융합학부 31과목
   seed-software-courses.sql 소프트웨어학부 36과목
-  seed-lab-reports.sql      로봇학실험 1~4 부담 데이터 (폼 없이 직접)
+  seed-lab-reports.sql      로봇학실험/AI로봇실험 1~4 부담 데이터 (폼 없이 직접)
+  seed-tracks.sql           관심분야 12트랙 · 93건 매핑
+  check-reports.sql         응답 점검 — 오타 · 중복 · 이상치
   reset.sql  verify.sql     초기화 · 저장 검증
   README.md                 적용 방법 · 실행 순서 · 권한 주의
 docs/
@@ -84,7 +86,7 @@ Vercel 에 이 레포를 연결하고, 프로젝트 설정의 Environment Variab
 | 주제·범위, 설계 계획서 | ✅ |
 | Supabase 스키마 (테이블 7개 · 트리거 · RLS · 뷰) | ✅ 적용 완료 |
 | 입력 폼 (Next.js + Vercel) | ✅ 배포·제출 확인 |
-| 교과과정 `course` — 전공선택 | ✅ **102과목** (소프트웨어 36 · 로봇 35 · 정보융합 31) |
+| 교과과정 `course` | ✅ **101과목** (소프트웨어 36 · 로봇 34 · 정보융합 31) |
 | 교과과정 `course` — **전공필수** | ⬜ 6과목뿐. **다음 병목** |
 | 트랙 분류 `track_course` | ✅ 12트랙 · 93건 매핑 — **[초안]**, 학과 검토 필요 |
 | 선수과목 `prerequisite` | ⬜ 0건 |
